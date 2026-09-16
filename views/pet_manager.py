@@ -87,7 +87,7 @@ class PetManager:
         self.data_table = ft.DataTable(
             heading_row_color="#F1F5F9",
             columns=[
-                ft.DataColumn(ft.Text("ID", weight="bold", size=16)), ft.DataColumn(ft.Text("ชื่อ", weight="bold", size=16)),
+                ft.DataColumn(ft.Text("ลำดับ", weight="bold", size=16)), ft.DataColumn(ft.Text("ชื่อ", weight="bold", size=16)),
                 ft.DataColumn(ft.Text("ประเภท", weight="bold", size=16)), ft.DataColumn(ft.Text("เพศ", weight="bold", size=16)),
                 ft.DataColumn(ft.Text("อายุ", weight="bold", size=16)), ft.DataColumn(ft.Text("เจ้าของ", weight="bold", size=16)),
                 ft.DataColumn(ft.Text("เบอร์โทร", weight="bold", size=16)), ft.DataColumn(ft.Text("จัดการ", weight="bold", size=16)),
@@ -215,6 +215,7 @@ class PetManager:
         self.update_filter_buttons_style()
 
         new_rows = []
+        display_no = 1
 
         for pet in pets_data:
             match_search = search_query.lower() in pet['name'].lower() or search_query.lower() in pet['type'].lower()
@@ -228,7 +229,7 @@ class PetManager:
                 new_rows.append(
                     ft.DataRow(
                         cells=[
-                            ft.DataCell(ft.Text(str(pet['id']), size=16)), 
+                            ft.DataCell(ft.Text(str(display_no), size=16)), 
                             ft.DataCell(ft.Text(pet['name'], weight="bold", size=16)),
                             ft.DataCell(ft.Text(pet['type'], size=16)), 
                             ft.DataCell(ft.Text(pet['gender'], size=16)),
@@ -245,6 +246,7 @@ class PetManager:
                         ]
                     )
                 )
+                display_no += 1
         
         self.data_table.rows = new_rows
         self.page.update()
