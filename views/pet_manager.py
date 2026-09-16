@@ -588,7 +588,7 @@ class PetManager:
 
         self.page.padding = page_padding
         available_width = max(280, page_width - (page_padding * 2))
-        content_width = min(1000, available_width)
+        content_width = min(1200, available_width)
 
         self.root_container.width = content_width
         self.header_stack.width = content_width
@@ -604,5 +604,5 @@ class PetManager:
 
     def build(self):
         self.refresh_table()
-        return self.app_layout
+        return self.root_container
     
