@@ -582,13 +582,13 @@ class PetManager:
             card_padding = 24
             title_size = 38
         else:
-            page_padding = 24
-            card_padding = 30
+            page_padding = 40
+            card_padding = 40
             title_size = 50
 
         self.page.padding = page_padding
         available_width = max(280, page_width - (page_padding * 2))
-        content_width = min(1200, available_width)
+        content_width = min(900, available_width)
 
         self.root_container.width = content_width
         self.header_stack.width = content_width
