@@ -23,18 +23,43 @@ class PetManager:
         # เพื่อให้ toggle .open = True/False + page.update() ใช้ได้แน่นอน ไม่ว่า Flet เวอร์ชันไหน
         self.page.overlay.append(self.delete_dialog)
         
+        # Style สำหรับ TextField
         self.tf_style = {
-            "border_color": "#CBD5E1", "focused_border_color": "#0F172A", 
-            "border_radius": 6, "text_size": 16, "bgcolor": "white", "height": 45
+            "border_color": "#CBD5E1",
+            "focused_border_color": "#0F172A",
+            "border_radius": 6,
+            "text_size": 16,
+            "bgcolor": "white",
+            "height": 45,
         }
-        
-        self.pet_name = ft.TextField(label="ชื่อสัตว์เลี้ยง", width=200, **self.tf_style)
+
+        # Style สำหรับ Dropdown แยกออกจาก TextField
+        # Flet 0.28.3 ไม่รองรับพารามิเตอร์ height ใน ft.Dropdown
+        self.dropdown_style = {
+            "border_color": "#CBD5E1",
+            "focused_border_color": "#0F172A",
+            "border_radius": 6,
+            "text_size": 16,
+            "bgcolor": "white",
+        }
+
+        self.pet_name = ft.TextField(
+            label="ชื่อสัตว์เลี้ยง",
+            width=200,
+            **self.tf_style
+        )
+
         self.pet_type = ft.Dropdown(
-            label="ประเภท", width=150, **self.tf_style,
+            label="ประเภท",
+            width=150,
+            **self.dropdown_style,
             options=[
-                ft.dropdown.Option("สุนัข"), ft.dropdown.Option("แมว"), 
-                ft.dropdown.Option("กระต่าย"), ft.dropdown.Option("นก"), ft.dropdown.Option("อื่นๆ")
-            ]
+                ft.dropdown.Option("สุนัข"),
+                ft.dropdown.Option("แมว"),
+                ft.dropdown.Option("กระต่าย"),
+                ft.dropdown.Option("นก"),
+                ft.dropdown.Option("อื่นๆ"),
+            ],
         )
         self.pet_type_other = ft.TextField(label="โปรดระบุ...", width=150, bgcolor="white", height=45, border_color="#CBD5E1", focused_border_color="#0F172A", border_radius=6, text_size=16)
         self.pet_breed = ft.TextField(label="สายพันธุ์", width=180, **self.tf_style)
