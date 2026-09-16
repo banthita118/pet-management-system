@@ -111,7 +111,41 @@ class PetManager:
         self.txt_menu_0 = ft.Text("ภาพรวมและฐานข้อมูล")
         self.txt_menu_1 = ft.Text("ลงทะเบียนสัตว์เลี้ยงใหม่")
         
+
+        self.configure_responsive_controls()
         self.setup_layouts()
+
+    def configure_responsive_controls(self):
+        """กำหนดสัดส่วน control สำหรับมือถือ แท็บเล็ต และคอม"""
+        controls = [
+            self.pet_name, self.pet_type, self.pet_type_other, self.pet_breed,
+            self.pet_age_years, self.pet_age_months, self.pet_weight, self.pet_color,
+            self.dob_field, self.owner_name, self.owner_phone, self.owner_address,
+            self.vaccine_field, self.health_notes, self.search_input,
+        ]
+        for control in controls:
+            control.width = None
+
+        self.pet_name.col = {"sm": 12, "md": 6, "lg": 3}
+        self.pet_type.col = {"sm": 12, "md": 6, "lg": 3}
+        self.pet_type_other.col = {"sm": 12, "md": 6, "lg": 3}
+        self.pet_breed.col = {"sm": 12, "md": 6, "lg": 3}
+
+        self.pet_age_years.col = {"sm": 6, "md": 3, "lg": 2}
+        self.pet_age_months.col = {"sm": 6, "md": 3, "lg": 2}
+        self.pet_weight.col = {"sm": 6, "md": 3, "lg": 2}
+        self.pet_color.col = {"sm": 6, "md": 3, "lg": 2}
+        self.dob_field.col = {"sm": 8, "md": 6, "lg": 2}
+        self.dob_btn.col = {"sm": 4, "md": 6, "lg": 2}
+
+        self.owner_name.col = {"sm": 12, "md": 6, "lg": 4}
+        self.owner_phone.col = {"sm": 12, "md": 6, "lg": 3}
+        self.owner_address.col = {"sm": 12, "md": 12, "lg": 5}
+
+        self.vaccine_field.col = {"sm": 12, "md": 6, "lg": 4}
+        self.is_spayed.col = {"sm": 12, "md": 6, "lg": 4}
+        self.health_notes.col = {"sm": 12, "md": 12, "lg": 12}
+        self.search_input.col = {"sm": 12, "md": 8, "lg": 6}
 
     def update_date_field(self, e):
         if self.dob_picker.value:
@@ -336,96 +370,237 @@ class PetManager:
         self.page.update()
 
     def setup_layouts(self):
-        header_stack = ft.Stack(
-            controls=[
-                ft.Image(src="animal.jpg", width=900, border_radius=12),
-                ft.Column([
-                    ft.Container(height=15), 
-                    ft.Row([
-                        ft.Text(
-                            "PET REGISTRATION", 
-                            size=50, 
-                            font_family="Sarabun-Bold", 
-                            color="black",
-                            style=ft.TextStyle(
-                                shadow=ft.BoxShadow(color="white", blur_radius=15, offset=ft.Offset(0, 0))
-                            )
-                        )
-                    ], alignment=ft.MainAxisAlignment.CENTER)
-                ], width=900)
-            ], width=900
+        self.header_image = ft.Image(
+            src="animal.jpg",
+            fit=ft.ImageFit.COVER,
+            border_radius=12,
+        )
+        self.header_title = ft.Text(
+            "PET REGISTRATION",
+            size=50,
+            font_family="Sarabun-Bold",
+            color="black",
+            text_align=ft.TextAlign.CENTER,
+            style=ft.TextStyle(
+                shadow=ft.BoxShadow(
+                    color="white",
+                    blur_radius=15,
+                    offset=ft.Offset(0, 0),
+                )
+            ),
+        )
+        self.header_overlay = ft.Column(
+            [
+                ft.Container(height=15),
+                ft.Row([self.header_title], alignment=ft.MainAxisAlignment.CENTER),
+            ]
+        )
+        self.header_stack = ft.Stack(
+            controls=[self.header_image, self.header_overlay]
         )
 
-        filter_row = ft.Row([
+        for btn in [
             self.btn_filter_all,
             self.btn_filter_dog,
             self.btn_filter_cat,
             self.btn_filter_other,
-        ], spacing=10) 
+        ]:
+            btn.width = None
+            btn.col = {"sm": 6, "md": 3, "lg": 3}
 
-        overview_and_table_card = ft.Container(
-            bgcolor="white", padding=40, border_radius=12, width=900,
-            content=ft.Column([
-                ft.Row([
+        filter_row = ft.ResponsiveRow(
+            [
+                self.btn_filter_all,
+                self.btn_filter_dog,
+                self.btn_filter_cat,
+                self.btn_filter_other,
+            ],
+            spacing=8,
+            run_spacing=8,
+        )
+
+        self.search_button = ft.ElevatedButton(
+            "ค้นหา",
+            on_click=self.search_pet,
+            bgcolor="#F1F5F9",
+            height=45,
+        )
+        self.search_button.col = {"sm": 12, "md": 4, "lg": 2}
+
+        search_row = ft.ResponsiveRow(
+            [self.search_input, self.search_button],
+            spacing=10,
+            run_spacing=10,
+        )
+
+        table_scroll = ft.Row(
+            [self.data_table],
+            scroll=ft.ScrollMode.AUTO,
+        )
+
+        self.overview_and_table_card = ft.Container(
+            bgcolor="white",
+            padding=30,
+            border_radius=12,
+            content=ft.Column(
+                [
                     ft.Text("ภาพรวมฐานข้อมูล", weight="bold", size=22, color="#0F172A"),
-                    filter_row
-                ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-                
-                ft.Divider(height=40, color="#F1F5F9"),
-                
-                ft.Row([ft.Text("รายชื่อในระบบ", weight="bold", size=20), ft.Row([self.search_input, ft.ElevatedButton("ค้นหา", on_click=self.search_pet, bgcolor="#F1F5F9", height=45)], spacing=10)], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-                ft.Divider(height=20, color="transparent"),
-                ft.Row([self.data_table], scroll="auto")
-            ])
+                    filter_row,
+                    ft.Divider(height=30, color="#F1F5F9"),
+                    ft.Text("รายชื่อในระบบ", weight="bold", size=20),
+                    search_row,
+                    ft.Divider(height=12, color="transparent"),
+                    table_scroll,
+                ],
+                spacing=12,
+            ),
         )
 
-        form_card = ft.Container(
-            bgcolor="white", padding=40, border_radius=12, width=900,
-            content=ft.Column([
-                ft.Text("ข้อมูลสัตว์เลี้ยง", weight="bold", size=20),
-                ft.Row([self.pet_name, self.pet_type, self.pet_type_other, self.pet_breed], spacing=15),
-                ft.Row([self.pet_age_years, self.pet_age_months, self.pet_weight, self.pet_color, self.dob_field, self.dob_btn], spacing=15),
-                ft.Row([self.pet_gender], spacing=15),
-                ft.Divider(height=40, color="#F1F5F9"),
-                ft.Text("ข้อมูลเจ้าของ", weight="bold", size=20),
-                ft.Row([self.owner_name, self.owner_phone, self.owner_address], spacing=15),
-                ft.Divider(height=40, color="#F1F5F9"),
-                ft.Text("ข้อมูลสุขภาพ", weight="bold", size=20),
-                ft.Row([self.vaccine_field, self.is_spayed], spacing=20),
-                ft.Row([self.health_notes]),
-                ft.Container(height=20),
-                ft.Row([self.btn_save], alignment=ft.MainAxisAlignment.END)
-            ])
+        pet_basic_row = ft.ResponsiveRow(
+            [self.pet_name, self.pet_type, self.pet_type_other, self.pet_breed],
+            spacing=15,
+            run_spacing=15,
         )
 
-        btn_style = ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=8))
+        pet_detail_row = ft.ResponsiveRow(
+            [
+                self.pet_age_years,
+                self.pet_age_months,
+                self.pet_weight,
+                self.pet_color,
+                self.dob_field,
+                self.dob_btn,
+            ],
+            spacing=15,
+            run_spacing=15,
+        )
+
+        owner_row = ft.ResponsiveRow(
+            [self.owner_name, self.owner_phone, self.owner_address],
+            spacing=15,
+            run_spacing=15,
+        )
+
+        health_row = ft.ResponsiveRow(
+            [self.vaccine_field, self.is_spayed],
+            spacing=15,
+            run_spacing=15,
+        )
+
+        notes_row = ft.ResponsiveRow(
+            [self.health_notes],
+            spacing=15,
+            run_spacing=15,
+        )
+
+        self.form_card = ft.Container(
+            bgcolor="white",
+            padding=30,
+            border_radius=12,
+            content=ft.Column(
+                [
+                    ft.Text("ข้อมูลสัตว์เลี้ยง", weight="bold", size=20),
+                    pet_basic_row,
+                    pet_detail_row,
+                    self.pet_gender,
+                    ft.Divider(height=30, color="#F1F5F9"),
+                    ft.Text("ข้อมูลเจ้าของ", weight="bold", size=20),
+                    owner_row,
+                    ft.Divider(height=30, color="#F1F5F9"),
+                    ft.Text("ข้อมูลสุขภาพ", weight="bold", size=20),
+                    health_row,
+                    notes_row,
+                    ft.Container(height=10),
+                    ft.Row([self.btn_save], alignment=ft.MainAxisAlignment.END),
+                ],
+                spacing=12,
+            ),
+        )
+
+        btn_style = ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8)
+        )
         self.menu_buttons = [
-            ft.ElevatedButton(content=self.txt_menu_0, on_click=lambda e: self.switch_tab(0), width=440, height=55, style=btn_style),
-            ft.ElevatedButton(content=self.txt_menu_1, on_click=lambda e: self.switch_tab(1), width=440, height=55, style=btn_style),
+            ft.ElevatedButton(
+                content=self.txt_menu_0,
+                on_click=lambda e: self.switch_tab(0),
+                height=55,
+                style=btn_style,
+            ),
+            ft.ElevatedButton(
+                content=self.txt_menu_1,
+                on_click=lambda e: self.switch_tab(1),
+                height=55,
+                style=btn_style,
+            ),
         ]
-        
+
+        for btn in self.menu_buttons:
+            btn.width = None
+            btn.col = {"sm": 12, "md": 6, "lg": 6}
+
         self.menu_buttons[0].bgcolor = "#0F172A"
         self.txt_menu_0.color = "white"
         self.menu_buttons[1].bgcolor = "white"
         self.txt_menu_1.color = "#64748B"
-        
-        menu_row = ft.Row(self.menu_buttons, alignment=ft.MainAxisAlignment.CENTER, spacing=20)
 
-        self.tab_contents = [
-            overview_and_table_card,
-            form_card,
-        ]
+        menu_row = ft.ResponsiveRow(
+            self.menu_buttons,
+            spacing=12,
+            run_spacing=12,
+        )
 
+        self.tab_contents = [self.overview_and_table_card, self.form_card]
         self.main_container = ft.Container(content=self.tab_contents[0])
 
-        self.app_layout = ft.Column([
-            ft.Container(height=10),
-            header_stack,
-            ft.Container(height=10),
-            menu_row,
-            ft.Divider(height=10, color="transparent"),
-            self.main_container
-        ], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+        self.app_layout = ft.Column(
+            [
+                self.header_stack,
+                ft.Container(height=4),
+                menu_row,
+                ft.Divider(height=4, color="transparent"),
+                self.main_container,
+            ],
+            horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
+            spacing=8,
+        )
+
+        self.root_container = ft.Container(content=self.app_layout)
+
+        self.page.on_resized = self.handle_resize
+        self.handle_resize()
+
+    def handle_resize(self, e=None):
+        page_width = self.page.width or 1000
+
+        if page_width < 600:
+            page_padding = 8
+            card_padding = 16
+            title_size = 28
+        elif page_width < 900:
+            page_padding = 16
+            card_padding = 24
+            title_size = 38
+        else:
+            page_padding = 24
+            card_padding = 30
+            title_size = 50
+
+        self.page.padding = page_padding
+        available_width = max(280, page_width - (page_padding * 2))
+        content_width = min(1000, available_width)
+
+        self.root_container.width = content_width
+        self.header_stack.width = content_width
+        self.header_image.width = content_width
+        self.header_overlay.width = content_width
+        self.header_title.size = title_size
+
+        self.overview_and_table_card.padding = card_padding
+        self.form_card.padding = card_padding
+
+        if e is not None:
+            self.page.update()
 
     def build(self):
         self.refresh_table()
